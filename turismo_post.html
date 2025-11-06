@@ -18,11 +18,11 @@
       background-size: 400% 400%;
       animation: gradientBG 15s ease infinite;
       min-height: 100vh;
-      display: flex;
-      justify-content: center;
-      align-items: center;
       padding: 20px;
       color: #333;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
     }
 
     @keyframes gradientBG {
@@ -33,13 +33,14 @@
 
     .container {
       width: 100%;
-      max-width: 800px;
+      max-width: 900px;
       background: rgba(255, 255, 255, 0.95);
       border-radius: 20px;
       box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
       overflow: hidden;
       animation: fadeIn 1s ease-out;
       position: relative;
+      margin: 20px auto;
     }
 
     @keyframes fadeIn {
@@ -85,9 +86,13 @@
 
     .form-container {
       padding: 30px;
+    }
+
+    .form-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
       gap: 20px;
+      width: 100%;
     }
 
     .form-group {
@@ -125,8 +130,9 @@
     }
 
     textarea {
-      height: 100px;
+      height: 120px;
       resize: vertical;
+      min-height: 100px;
     }
 
     .radio-group, .checkbox-group {
@@ -141,6 +147,8 @@
       align-items: center;
       cursor: pointer;
       transition: transform 0.2s;
+      flex: 1 1 45%;
+      min-width: 120px;
     }
 
     .radio-option:hover, .checkbox-option:hover {
@@ -192,11 +200,25 @@
       font-size: 1.2rem;
     }
 
+    .file-preview {
+      margin-top: 10px;
+      text-align: center;
+      display: none;
+    }
+
+    .file-preview img {
+      max-width: 100%;
+      max-height: 150px;
+      border-radius: 10px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    }
+
     .button-group {
       display: flex;
       justify-content: space-between;
       grid-column: 1 / -1;
-      margin-top: 20px;
+      margin-top: 30px;
+      gap: 15px;
     }
 
     .btn {
@@ -210,6 +232,7 @@
       display: flex;
       align-items: center;
       justify-content: center;
+      flex: 1;
     }
 
     .btn-submit {
@@ -307,16 +330,7 @@
       margin-top: 20px;
       display: none;
       animation: fadeIn 0.5s;
-    }
-
-    @media (max-width: 768px) {
-      .form-container {
-        grid-template-columns: 1fr;
-      }
-      
-      .header h1 {
-        font-size: 1.8rem;
-      }
+      grid-column: 1 / -1;
     }
 
     .pulse {
@@ -337,6 +351,88 @@
       font-weight: bold;
       margin-left: 5px;
     }
+
+    .form-note {
+      font-size: 0.85rem;
+      color: #666;
+      margin-top: 5px;
+      font-style: italic;
+    }
+
+    /* Responsive Design */
+    @media (max-width: 768px) {
+      body {
+        padding: 10px;
+        align-items: flex-start;
+      }
+      
+      .container {
+        margin: 10px auto;
+        border-radius: 15px;
+      }
+      
+      .header {
+        padding: 20px 15px;
+      }
+      
+      .header h1 {
+        font-size: 1.8rem;
+      }
+      
+      .header p {
+        font-size: 1rem;
+      }
+      
+      .form-container {
+        padding: 20px 15px;
+      }
+      
+      .form-grid {
+        grid-template-columns: 1fr;
+        gap: 15px;
+      }
+      
+      .radio-option, .checkbox-option {
+        flex: 1 1 100%;
+      }
+      
+      .button-group {
+        flex-direction: column;
+        gap: 10px;
+      }
+      
+      .btn {
+        width: 100%;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .header h1 {
+        font-size: 1.5rem;
+      }
+      
+      .header p {
+        font-size: 0.9rem;
+      }
+      
+      .form-container {
+        padding: 15px 10px;
+      }
+      
+      input, textarea, select {
+        padding: 10px 12px;
+        font-size: 0.9rem;
+      }
+      
+      .btn {
+        padding: 12px 20px;
+        font-size: 0.9rem;
+      }
+      
+      .radio-group, .checkbox-group {
+        gap: 10px;
+      }
+    }
   </style>
 </head>
 <body>
@@ -347,131 +443,139 @@
     </div>
 
     <div class="form-container">
-      <div class="form-group full-width">
-        <label for="nombre">Nombre del sitio turístico</label>
-        <input type="text" id="nombre" name="nombre" required placeholder="Ej: Mitad del Mundo, Quilotoa, Baños de Agua Santa">
-        <div class="progress-bar">
-          <div class="progress" id="nombre-progress"></div>
+      <form action="registro_post.php" method="POST" enctype="multipart/form-data">
+        <div class="form-grid">
+          <div class="form-group full-width">
+            <label for="nombre">Nombre del sitio turístico</label>
+            <input type="text" id="nombre" name="nombre" required placeholder="Ej: Mitad del Mundo, Quilotoa, Baños de Agua Santa">
+            <div class="progress-bar">
+              <div class="progress" id="nombre-progress"></div>
+            </div>
+          </div>
+
+          <div class="form-group full-width">
+            <label for="descripcion">Descripción del sitio</label>
+            <textarea id="descripcion" name="descripcion" required placeholder="Breve reseña histórica o características del lugar..."></textarea>
+            <div class="character-count"><span id="char-count">0</span>/500 caracteres</div>
+          </div>
+
+          <div class="form-group">
+            <label for="provincia">Provincia
+              <span class="tooltip">?
+                <span class="tooltip-text">Selecciona la provincia donde se encuentra el sitio turístico</span>
+              </span>
+            </label>
+            <select id="provincia" name="provincia" required>
+              <option value="">Seleccione una provincia</option>
+              <option value="Azuay">Azuay</option>
+              <option value="Bolívar">Bolívar</option>
+              <option value="Cañar">Cañar</option>
+              <option value="Carchi">Carchi</option>
+              <option value="Chimborazo">Chimborazo</option>
+              <option value="Cotopaxi">Cotopaxi</option>
+              <option value="El Oro">El Oro</option>
+              <option value="Esmeraldas">Esmeraldas</option>
+              <option value="Galápagos">Galápagos <span class="featured-province">Destacado</span></option>
+              <option value="Guayas">Guayas</option>
+              <option value="Imbabura">Imbabura</option>
+              <option value="Loja">Loja</option>
+              <option value="Los Ríos">Los Ríos</option>
+              <option value="Manabí">Manabí</option>
+              <option value="Morona Santiago">Morona Santiago</option>
+              <option value="Napo">Napo</option>
+              <option value="Orellana">Orellana</option>
+              <option value="Pastaza">Pastaza</option>
+              <option value="Pichincha">Pichincha</option>
+              <option value="Santa Elena">Santa Elena</option>
+              <option value="Santo Domingo de los Tsáchilas">Santo Domingo de los Tsáchilas</option>
+              <option value="Sucumbíos">Sucumbíos</option>
+              <option value="Tungurahua">Tungurahua</option>
+              <option value="Zamora Chinchipe">Zamora Chinchipe</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label>Tipo de turismo</label>
+            <div class="radio-group">
+              <div class="radio-option">
+                <input type="radio" id="natural" name="tipo" value="Natural" required>
+                <label for="natural">Natural</label>
+              </div>
+              <div class="radio-option">
+                <input type="radio" id="cultural" name="tipo" value="Cultural">
+                <label for="cultural">Cultural</label>
+              </div>
+              <div class="radio-option">
+                <input type="radio" id="aventura" name="tipo" value="Aventura">
+                <label for="aventura">Aventura</label>
+              </div>
+              <div class="radio-option">
+                <input type="radio" id="gastronomico" name="tipo" value="Gastronómico">
+                <label for="gastronomico">Gastronómico</label>
+              </div>
+            </div>
+          </div>
+
+          <div class="form-group full-width">
+            <label>Servicios disponibles</label>
+            <div class="checkbox-group">
+              <div class="checkbox-option">
+                <input type="checkbox" id="guia" name="servicios[]" value="Guía turística">
+                <label for="guia">Guía turística</label>
+              </div>
+              <div class="checkbox-option">
+                <input type="checkbox" id="hospedaje" name="servicios[]" value="Hospedaje">
+                <label for="hospedaje">Hospedaje</label>
+              </div>
+              <div class="checkbox-option">
+                <input type="checkbox" id="alimentacion" name="servicios[]" value="Alimentación">
+                <label for="alimentacion">Alimentación</label>
+              </div>
+              <div class="checkbox-option">
+                <input type="checkbox" id="transporte" name="servicios[]" value="Transporte">
+                <label for="transporte">Transporte</label>
+              </div>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="imagen">Imagen representativa</label>
+            <div class="file-upload">
+              <input type="file" id="imagen" name="imagen" accept="image/*" required>
+              <label for="imagen" class="file-upload-label">
+                <i class="fas fa-cloud-upload-alt"></i> Subir imagen
+              </label>
+            </div>
+            <div class="file-preview" id="file-preview">
+              <img id="preview-img" src="" alt="Vista previa">
+            </div>
+            <div class="form-note">Formatos aceptados: JPG, PNG, GIF (Máx. 5MB)</div>
+          </div>
+
+          <div class="form-group">
+            <label for="email">Correo de contacto</label>
+            <input type="email" id="email" name="email" required placeholder="ejemplo@correo.com">
+          </div>
+
+          <div class="form-group">
+            <label for="fecha">Fecha de registro</label>
+            <input type="date" id="fecha" name="fecha" required>
+          </div>
+
+          <div class="button-group">
+            <button type="reset" class="btn btn-reset">
+              <i class="fas fa-eraser"></i> Limpiar formulario
+            </button>
+            <button type="submit" class="btn btn-submit pulse">
+              <i class="fas fa-paper-plane"></i> Registrar sitio turístico
+            </button>
+          </div>
+
+          <div class="success-message" id="success-message">
+            <i class="fas fa-check-circle"></i> ¡Formulario enviado con éxito! Redirigiendo...
+          </div>
         </div>
-      </div>
-
-      <div class="form-group full-width">
-        <label for="descripcion">Descripción del sitio</label>
-        <textarea id="descripcion" name="descripcion" required placeholder="Breve reseña histórica o características del lugar..."></textarea>
-        <div class="character-count"><span id="char-count">0</span>/500 caracteres</div>
-      </div>
-
-      <div class="form-group">
-        <label for="provincia">Provincia
-          <span class="tooltip">?
-            <span class="tooltip-text">Selecciona la provincia donde se encuentra el sitio turístico</span>
-          </span>
-        </label>
-        <select id="provincia" name="provincia" required>
-          <option value="">Seleccione una provincia</option>
-          <option value="Azuay">Azuay</option>
-          <option value="Bolívar">Bolívar</option>
-          <option value="Cañar">Cañar</option>
-          <option value="Carchi">Carchi</option>
-          <option value="Chimborazo">Chimborazo</option>
-          <option value="Cotopaxi">Cotopaxi</option>
-          <option value="El Oro">El Oro</option>
-          <option value="Esmeraldas">Esmeraldas</option>
-          <option value="Galápagos">Galápagos <span class="featured-province">Destacado</span></option>
-          <option value="Guayas">Guayas</option>
-          <option value="Imbabura">Imbabura</option>
-          <option value="Loja">Loja</option>
-          <option value="Los Ríos">Los Ríos</option>
-          <option value="Manabí">Manabí</option>
-          <option value="Morona Santiago">Morona Santiago</option>
-          <option value="Napo">Napo</option>
-          <option value="Orellana">Orellana</option>
-          <option value="Pastaza">Pastaza</option>
-          <option value="Pichincha">Pichincha</option>
-          <option value="Santa Elena">Santa Elena</option>
-          <option value="Santo Domingo de los Tsáchilas">Santo Domingo de los Tsáchilas</option>
-          <option value="Sucumbíos">Sucumbíos</option>
-          <option value="Tungurahua">Tungurahua</option>
-          <option value="Zamora Chinchipe">Zamora Chinchipe</option>
-        </select>
-      </div>
-
-      <div class="form-group">
-        <label>Tipo de turismo</label>
-        <div class="radio-group">
-          <div class="radio-option">
-            <input type="radio" id="natural" name="tipo" value="Natural" required>
-            <label for="natural">Natural</label>
-          </div>
-          <div class="radio-option">
-            <input type="radio" id="cultural" name="tipo" value="Cultural">
-            <label for="cultural">Cultural</label>
-          </div>
-          <div class="radio-option">
-            <input type="radio" id="aventura" name="tipo" value="Aventura">
-            <label for="aventura">Aventura</label>
-          </div>
-          <div class="radio-option">
-            <input type="radio" id="gastronomico" name="tipo" value="Gastronómico">
-            <label for="gastronomico">Gastronómico</label>
-          </div>
-        </div>
-      </div>
-
-      <div class="form-group full-width">
-        <label>Servicios disponibles</label>
-        <div class="checkbox-group">
-          <div class="checkbox-option">
-            <input type="checkbox" id="guia" name="servicios[]" value="Guía turística">
-            <label for="guia">Guía turística</label>
-          </div>
-          <div class="checkbox-option">
-            <input type="checkbox" id="hospedaje" name="servicios[]" value="Hospedaje">
-            <label for="hospedaje">Hospedaje</label>
-          </div>
-          <div class="checkbox-option">
-            <input type="checkbox" id="alimentacion" name="servicios[]" value="Alimentación">
-            <label for="alimentacion">Alimentación</label>
-          </div>
-          <div class="checkbox-option">
-            <input type="checkbox" id="transporte" name="servicios[]" value="Transporte">
-            <label for="transporte">Transporte</label>
-          </div>
-        </div>
-      </div>
-
-      <div class="form-group">
-        <label for="imagen">Imagen representativa</label>
-        <div class="file-upload">
-          <input type="file" id="imagen" name="imagen" accept="image/*" required>
-          <label for="imagen" class="file-upload-label">
-            <i class="fas fa-cloud-upload-alt"></i> Subir imagen
-          </label>
-        </div>
-      </div>
-
-      <div class="form-group">
-        <label for="email">Correo de contacto</label>
-        <input type="email" id="email" name="email" required placeholder="ejemplo@correo.com">
-      </div>
-
-      <div class="form-group">
-        <label for="fecha">Fecha de registro</label>
-        <input type="date" id="fecha" name="fecha" required>
-      </div>
-
-      <div class="button-group">
-        <button type="reset" class="btn btn-reset">
-          <i class="fas fa-eraser"></i> Limpiar formulario
-        </button>
-        <button type="submit" class="btn btn-submit pulse">
-          <i class="fas fa-paper-plane"></i> Registrar sitio turístico
-        </button>
-      </div>
-
-      <div class="success-message" id="success-message">
-        <i class="fas fa-check-circle"></i> ¡Formulario enviado con éxito! Gracias por compartir este tesoro ecuatoriano.
-      </div>
+      </form>
     </div>
   </div>
 
@@ -512,6 +616,24 @@
         }
       });
       
+      // Vista previa de imagen
+      const imagenInput = document.getElementById('imagen');
+      const filePreview = document.getElementById('file-preview');
+      const previewImg = document.getElementById('preview-img');
+      
+      imagenInput.addEventListener('change', function() {
+        if (this.files && this.files[0]) {
+          const reader = new FileReader();
+          
+          reader.onload = function(e) {
+            previewImg.src = e.target.result;
+            filePreview.style.display = 'block';
+          }
+          
+          reader.readAsDataURL(this.files[0]);
+        }
+      });
+      
       // Efecto de validación en tiempo real para email
       const emailInput = document.getElementById('email');
       
@@ -525,38 +647,6 @@
           this.style.borderColor = '#4caf50';
           this.style.boxShadow = '0 0 0 3px rgba(76, 175, 80, 0.2)';
         }
-      });
-      
-      // Simular envío del formulario
-      const form = document.querySelector('form');
-      const successMessage = document.getElementById('success-message');
-      
-      form.addEventListener('submit', function(e) {
-        e.preventDefault();
-        
-        // Mostrar mensaje de éxito
-        successMessage.style.display = 'block';
-        
-        // Ocultar mensaje después de 5 segundos
-        setTimeout(function() {
-          successMessage.style.display = 'none';
-        }, 5000);
-        
-        // Aquí normalmente se enviarían los datos al servidor
-        console.log('Formulario enviado');
-      });
-      
-      // Efecto de hover en las opciones de checkbox y radio
-      const options = document.querySelectorAll('.radio-option, .checkbox-option');
-      
-      options.forEach(option => {
-        option.addEventListener('mouseenter', function() {
-          this.style.transform = 'translateY(-3px)';
-        });
-        
-        option.addEventListener('mouseleave', function() {
-          this.style.transform = 'translateY(0)';
-        });
       });
     });
   </script>
